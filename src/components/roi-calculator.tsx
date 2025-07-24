@@ -172,21 +172,16 @@ export default function RoiCalculator() {
     form.reset(initialValues);
   }
 
-  const InputField = ({ name, label, icon, placeholder }: { name: keyof FormValues, label: string, icon: React.ReactNode, placeholder: string }) => (
+  const InputField = ({ name, label }: { name: keyof FormValues, label: string }) => (
     <FormField
       control={form.control}
       name={name}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              {icon}
-            </div>
-            <FormControl>
-              <Input type="number" placeholder={placeholder} {...field} className="pl-10" />
-            </FormControl>
-          </div>
+          <FormControl>
+            <Input type="number" {...field} className="bg-background" />
+          </FormControl>
           <FormMessage />
         </FormItem>
       )}
@@ -195,36 +190,32 @@ export default function RoiCalculator() {
 
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-      <div className="lg:col-span-2 space-y-8">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
+      <div className="lg:col-span-3 space-y-10">
         <Form {...form}>
-          <form className="space-y-8">
-            <Card className="bg-card/50">
-              <CardHeader>
-                <CardTitle>Current Recruitment Metrics</CardTitle>
-                <CardDescription>Enter your company's current hiring data.</CardDescription>
-              </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <InputField name="annualHires" label="Total Annual Hires" icon={<Briefcase className="h-4 w-4 text-muted-foreground" />} placeholder="e.g., 100" />
-                <InputField name="interviewsPerHire" label="Interviews per Hire" icon={<Users className="h-4 w-4 text-muted-foreground" />} placeholder="e.g., 8" />
-                <InputField name="timeToHire" label="Avg. Time to Hire (days)" icon={<Clock className="h-4 w-4 text-muted-foreground" />} placeholder="e.g., 45" />
-                <InputField name="costPerHire" label="Avg. Cost per Hire ($)" icon={<CircleDollarSign className="h-4 w-4 text-muted-foreground" />} placeholder="e.g., 5000" />
-                <InputField name="employeeTurnoverRate" label="Annual Turnover Rate (%)" icon={<Users className="h-4 w-4 text-muted-foreground" />} placeholder="e.g., 15" />
-                <InputField name="avgSalary" label="Avg. Annual Salary ($)" icon={<CircleDollarSign className="h-4 w-4 text-muted-foreground" />} placeholder="e.g., 80000" />
-              </CardContent>
-            </Card>
+          <form className="space-y-10">
+            <div>
+              <h2 className="text-xl font-semibold mb-1">Current Recruitment Metrics</h2>
+              <p className="text-muted-foreground mb-6">Enter your company's current hiring data.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <InputField name="annualHires" label="Total Annual Hires" />
+                <InputField name="interviewsPerHire" label="Interviews per Hire" />
+                <InputField name="timeToHire" label="Avg. Time to Hire (days)" />
+                <InputField name="costPerHire" label="Avg. Cost per Hire ($)" />
+                <InputField name="employeeTurnoverRate" label="Annual Turnover Rate (%)" />
+                <InputField name="avgSalary" label="Avg. Annual Salary ($)" />
+              </div>
+            </div>
 
-            <Card className="bg-card/50">
-              <CardHeader>
-                <CardTitle>Intervue.io Impact Parameters</CardTitle>
-                <CardDescription>Estimate the improvements with Intervue.io or let AI suggest them.</CardDescription>
-              </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <InputField name="timeToHireReduction" label="Time to Hire Reduction (days)" icon={<ArrowDown className="h-4 w-4 text-green-500" />} placeholder="e.g., 10" />
-                  <InputField name="costPerHireReduction" label="Cost per Hire Reduction ($)" icon={<ArrowDown className="h-4 w-4 text-green-500" />} placeholder="e.g., 1000" />
-                  <InputField name="employeeTurnoverReduction" label="Turnover Reduction (%)" icon={<ArrowDown className="h-4 w-4 text-green-500" />} placeholder="e.g., 5" />
-              </CardContent>
-              <CardFooter className="flex-col sm:flex-row gap-2 pt-6">
+            <div>
+                <h2 className="text-xl font-semibold mb-1">Intervue.io Impact Parameters</h2>
+                <p className="text-muted-foreground mb-6">Estimate the improvements with Intervue.io or let AI suggest them.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                  <InputField name="timeToHireReduction" label="Time to Hire Reduction (days)" />
+                  <InputField name="costPerHireReduction" label="Cost per Hire Reduction ($)" />
+                  <InputField name="employeeTurnoverReduction" label="Turnover Reduction (%)" />
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2 mt-6">
                   <Button type="button" onClick={handleSuggest} disabled={isSuggesting} className="w-full sm:w-auto">
                       {isSuggesting ? <Loader2 className="animate-spin" /> : <Lightbulb />}
                       Get AI Suggestions
@@ -233,48 +224,40 @@ export default function RoiCalculator() {
                       <RefreshCcw />
                       Reset Data
                   </Button>
-              </CardFooter>
-            </Card>
+              </div>
+            </div>
           </form>
         </Form>
       </div>
-      <div className="space-y-6 lg:sticky lg:top-24">
-        <Card className="bg-primary/10 border-primary/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base text-primary">
-                <PiggyBank /> Estimated Annual Savings
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-4xl lg:text-5xl font-bold tracking-tight text-foreground">{formatCurrency(savings.total)}</p>
-            <p className="text-sm text-muted-foreground mt-1">based on your inputs</p>
-          </CardContent>
-        </Card>
+      <div className="lg:col-span-2 space-y-6 lg:sticky lg:top-16">
+        <div className="bg-muted/50 rounded-lg p-6">
+          <h3 className="font-semibold text-foreground flex items-center gap-2">
+              <PiggyBank className="text-muted-foreground" /> Estimated Annual Savings
+          </h3>
+          <p className="text-5xl font-bold tracking-tight text-foreground mt-2">{formatCurrency(savings.total)}</p>
+          <p className="text-sm text-muted-foreground mt-1">based on your inputs</p>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Savings Breakdown</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                <div className="rounded-lg bg-muted/50 p-3">
-                    <p className="text-sm font-medium text-muted-foreground">Time</p>
-                    <p className="text-lg font-bold">{formatCurrency(savings.time)}</p>
-                </div>
-                <div className="rounded-lg bg-muted/50 p-3">
-                    <p className="text-sm font-medium text-muted-foreground">Hiring Cost</p>
-                    <p className="text-lg font-bold">{formatCurrency(savings.cost)}</p>
-                </div>
-                <div className="rounded-lg bg-muted/50 p-3">
-                    <p className="text-sm font-medium text-muted-foreground">Turnover</p>
-                    <p className="text-lg font-bold">{formatCurrency(savings.turnover)}</p>
-                </div>
-            </div>
+        <div>
+          <h3 className="text-lg font-semibold mb-2">Savings Breakdown</h3>
             <div className="pt-4">
                 <SavingsChart data={chartData} />
             </div>
-          </CardContent>
-        </Card>
+             <div className="grid grid-cols-3 gap-2 text-center mt-4">
+                <div className="rounded-lg p-3">
+                    <p className="text-sm font-medium text-muted-foreground">Time</p>
+                    <p className="text-xl font-bold">{formatCurrency(savings.time)}</p>
+                </div>
+                <div className="rounded-lg p-3">
+                    <p className="text-sm font-medium text-muted-foreground">Hiring Cost</p>
+                    <p className="text-xl font-bold">{formatCurrency(savings.cost)}</p>
+                </div>
+                <div className="rounded-lg p-3">
+                    <p className="text-sm font-medium text-muted-foreground">Turnover</p>
+                    <p className="text-xl font-bold">{formatCurrency(savings.turnover)}</p>
+                </div>
+            </div>
+        </div>
       </div>
     </div>
   );
