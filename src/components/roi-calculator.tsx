@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import {
   Briefcase,
@@ -41,6 +41,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
+import { Progress } from "@/components/ui/progress";
 import { SavingsChart } from "@/components/savings-chart";
 import { useToast } from "@/hooks/use-toast";
 
@@ -73,9 +75,9 @@ const initialValues: FormValues = {
   costPerHire: 5000,
   employeeTurnoverRate: 15,
   avgSalary: 80000,
-  timeToHireReduction: 0,
-  costPerHireReduction: 0,
-  employeeTurnoverReduction: 0,
+  timeToHireReduction: 10,
+  costPerHireReduction: 1000,
+  employeeTurnoverReduction: 5,
 };
 
 export default function RoiCalculator() {
@@ -93,8 +95,11 @@ export default function RoiCalculator() {
     const {
       annualHires,
       avgSalary,
+      timeToHire,
       timeToHireReduction,
+      costPerHire,
       costPerHireReduction,
+      employeeTurnoverRate,
       employeeTurnoverReduction,
     } = watchedValues;
 
@@ -103,11 +108,10 @@ export default function RoiCalculator() {
     }
 
     const timeSavings =
-      (avgSalary / 365) * timeToHireReduction * annualHires;
-    const costPerHireSavings = costPerHireReduction * annualHires;
-    // Assuming cost of turnover is 50% of annual salary
+      (avgSalary / 365) * Math.min(timeToHire, timeToHireReduction) * annualHires;
+    const costPerHireSavings = Math.min(costPerHire, costPerHireReduction) * annualHires;
     const turnoverSavings =
-      (employeeTurnoverReduction / 100) * annualHires * (avgSalary * 0.5);
+      (Math.min(employeeTurnoverRate, employeeTurnoverReduction) / 100) * annualHires * (avgSalary * 0.5);
     const totalSavings = timeSavings + costPerHireSavings + turnoverSavings;
 
     return {
@@ -117,6 +121,11 @@ export default function RoiCalculator() {
       total: totalSavings,
     };
   }, [watchedValues]);
+
+  const savingsPercentage = useMemo(() => {
+    if (!watchedValues.avgSalary || watchedValues.avgSalary === 0) return 0;
+    return Math.min(100, (savings.total / watchedValues.avgSalary) * 100);
+  }, [savings.total, watchedValues.avgSalary]);
 
   const chartData = [
     { name: "Time Savings", value: savings.time, fill: "hsl(var(--chart-1))" },
@@ -191,6 +200,53 @@ export default function RoiCalculator() {
     />
   );
 
+  const SliderField = ({
+    name,
+    label,
+    icon: Icon,
+    max,
+    step,
+    unit,
+  }: {
+    name: keyof FormValues;
+    label: string;
+    icon: React.ElementType;
+    max: number;
+    step: number;
+    unit: string;
+  }) => (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className="flex items-center gap-2">
+            <Icon className="size-4 text-muted-foreground" />
+            {label}
+          </FormLabel>
+          <FormControl>
+            <div className="flex items-center gap-4">
+              <Slider
+                value={[field.value]}
+                onValueChange={(value) => field.onChange(value[0])}
+                max={max}
+                step={step}
+                className="flex-1"
+              />
+              <Input
+                {...field}
+                type="number"
+                className="w-28 bg-background"
+                unit={unit}
+              />
+            </div>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
@@ -213,10 +269,10 @@ export default function RoiCalculator() {
             <div>
                 <h2 className="text-xl font-semibold mb-1">Intervue.io Impact Parameters</h2>
                 <p className="text-muted-foreground mb-6">Estimate the improvements with Intervue.io or let AI suggest them.</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                  <InputField name="timeToHireReduction" label="Time to Hire Reduction (days)" icon={TrendingUp} />
-                  <InputField name="costPerHireReduction" label="Cost per Hire Reduction ($)" icon={TrendingUp} />
-                  <InputField name="employeeTurnoverReduction" label="Turnover Reduction (%)" icon={TrendingUp} />
+              <div className="space-y-6">
+                  <SliderField name="timeToHireReduction" label="Time to Hire Reduction" icon={TrendingUp} max={watchedValues.timeToHire} step={1} unit="days" />
+                  <SliderField name="costPerHireReduction" label="Cost per Hire Reduction" icon={TrendingUp} max={watchedValues.costPerHire} step={100} unit="$" />
+                  <SliderField name="employeeTurnoverReduction" label="Turnover Reduction" icon={TrendingUp} max={watchedValues.employeeTurnoverRate} step={0.5} unit="%" />
               </div>
               <div className="flex flex-col sm:flex-row gap-2 mt-6">
                   <Button type="button" onClick={handleSuggest} disabled={isSuggesting} className="w-full sm:w-auto">
@@ -239,6 +295,7 @@ export default function RoiCalculator() {
           </h3>
           <p className="text-5xl font-bold tracking-tight text-foreground mt-2">{formatCurrency(savings.total)}</p>
           <p className="text-sm text-muted-foreground mt-1">based on your inputs</p>
+          <Progress value={savingsPercentage} className="mt-4" />
         </div>
 
         <div>
