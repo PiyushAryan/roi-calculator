@@ -99,8 +99,8 @@ export default function RoiCalculator() {
   }
 
   const chartData = [
-    { name: "Current Cost", value: costs.currentQuarterlyCost, fill: "var(--color-chart-1)" },
-    { name: "With Intervue.io", value: costs.newQuarterlyCost, fill: "var(--color-chart-2)" },
+    { name: "Current Cost", value: costs.currentQuarterlyCost, fill: "hsl(var(--chart-1))" },
+    { name: "With Intervue.io", value: costs.newQuarterlyCost, fill: "hsl(var(--chart-2))" },
   ];
 
   return (
@@ -208,7 +208,6 @@ export default function RoiCalculator() {
             <CardHeader>
                 <CardTitle className="text-2xl">Your Potential Savings</CardTitle>
                 <CardDescription>
-                  <BadgePercent className="inline-block mr-2 text-green-500" />
                   Assuming a 40% cost reduction with Intervue.io
                 </CardDescription>
             </CardHeader>
@@ -219,21 +218,34 @@ export default function RoiCalculator() {
                 
                 <Separator />
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                  <div className="bg-muted/40 p-4 rounded-lg">
-                    <h3 className="text-sm font-medium text-muted-foreground flex items-center justify-center gap-2"><TrendingDown className="text-destructive"/>Current Cost</h3>
-                    <p className="text-2xl font-bold mt-1">{formatCurrency(costs.currentQuarterlyCost)}</p>
-                    <p className="text-xs text-muted-foreground">per quarter</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                      <div className="flex items-start gap-4">
+                          <div className="p-2 bg-muted rounded-md">
+                              <TrendingDown className="w-5 h-5 text-destructive" />
+                          </div>
+                          <div>
+                              <p className="text-sm text-muted-foreground">Current Quarterly Cost</p>
+                              <p className="text-2xl font-bold">{formatCurrency(costs.currentQuarterlyCost)}</p>
+                          </div>
+                      </div>
+                      <div className="flex items-start gap-4">
+                          <div className="p-2 bg-muted rounded-md">
+                              <TrendingUp className="w-5 h-5 text-green-500" />
+                          </div>
+                          <div>
+                              <p className="text-sm text-muted-foreground">Intervue.io Quarterly Cost</p>
+                              <p className="text-2xl font-bold">{formatCurrency(costs.newQuarterlyCost)}</p>
+                          </div>
+                      </div>
                   </div>
-                  <div className="bg-muted/40 p-4 rounded-lg">
-                    <h3 className="text-sm font-medium text-muted-foreground flex items-center justify-center gap-2"><TrendingUp className="text-green-500" />Intervue.io Cost</h3>
-                    <p className="text-2xl font-bold mt-1">{formatCurrency(costs.newQuarterlyCost)}</p>
-                    <p className="text-xs text-muted-foreground">per quarter</p>
-                  </div>
-                   <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
-                    <h3 className="text-sm font-medium text-primary flex items-center justify-center gap-2"><BadgePercent/>Quarterly Savings</h3>
-                    <p className="text-2xl font-bold mt-1 text-primary">{formatCurrency(costs.quarterlySavings)}</p>
-                    <p className="text-xs text-primary/80">That's 40%!</p>
+                  <div className="bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
+                    <div className="p-2 bg-primary/20 rounded-full mb-2">
+                      <BadgePercent className="w-6 h-6 text-primary"/>
+                    </div>
+                    <h3 className="text-lg font-semibold text-primary">Total Quarterly Savings</h3>
+                    <p className="text-4xl font-bold mt-1 text-primary">{formatCurrency(costs.quarterlySavings)}</p>
+                    <p className="text-sm text-primary/80 mt-1">That's a 40% reduction!</p>
                   </div>
                 </div>
             </CardContent>
