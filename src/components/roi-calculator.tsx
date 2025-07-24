@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
   Briefcase,
-  Calendar,
   CircleDollarSign,
   Clock,
   RefreshCcw,
@@ -33,7 +32,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
@@ -74,7 +73,7 @@ export default function RoiCalculator() {
       avgInterviewDuration,
     } = watchedValues;
 
-    if (!interviewsPerRole || !monthlyHiringVolume || !avgInterviewerSalary || !avgInterviewDuration) {
+    if (!form.formState.isValid) {
       return { costPerInterview: 0, costPerRole: 0, quarterlyTotal: 0, savingsPerQuarter: 0 };
     }
 
@@ -95,7 +94,7 @@ export default function RoiCalculator() {
       quarterlyTotal,
       savingsPerQuarter,
     };
-  }, [watchedValues]);
+  }, [watchedValues, form.formState.isValid]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -116,12 +115,12 @@ export default function RoiCalculator() {
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="flex items-center gap-2 font-normal text-muted-foreground">
-            <Icon className="size-4" />
-            {label}
+          <FormLabel className="flex items-center gap-2 font-medium text-muted-foreground">
+            <Icon className="size-5" />
+            <span>{label}</span>
           </FormLabel>
           <FormControl>
-            <Input type="number" {...field} className="bg-background !mt-1" unit={unit} />
+            <Input type="number" {...field} className="bg-background !mt-2 text-lg" unit={unit} />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -130,11 +129,11 @@ export default function RoiCalculator() {
   );
   
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-        <Card className="border-none shadow-none bg-transparent">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+        <Card className="border-none shadow-none bg-transparent p-0">
         <Form {...form}>
-          <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <InputField name="interviewsPerRole" label="Interviews per Role" icon={Briefcase}/>
                 <InputField name="monthlyHiringVolume" label="Monthly Hiring Volume" icon={Users} unit="roles" />
                 <InputField name="avgInterviewDuration" label="Avg. Interview Duration" icon={Clock} unit="hours" />
@@ -143,55 +142,55 @@ export default function RoiCalculator() {
                     name="avgInterviewerSalary"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="flex items-center gap-2 font-normal text-muted-foreground">
-                                <CircleDollarSign className="size-4" />
-                                Average Interviewer Salary
+                            <FormLabel className="flex items-center gap-2 font-medium text-muted-foreground">
+                                <CircleDollarSign className="size-5" />
+                                <span>Average Interviewer Salary</span>
                             </FormLabel>
-                            <FormControl>
-                                <div className="flex items-center gap-2 !mt-1">
-                                    <Input type="number" {...field} className="bg-background" />
-                                    <FormField
-                                        control={form.control}
-                                        name="salaryType"
-                                        render={({ field }) => (
-                                            <RadioGroup
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                                className="flex"
-                                            >
-                                                <FormItem className="flex items-center space-x-2 space-y-0">
-                                                    <FormControl>
-                                                        <Button size="sm" type="button" variant={field.value === 'monthly' ? 'default' : 'outline'} onClick={() => field.onChange('monthly')} className="h-10">Monthly</Button>
-                                                    </FormControl>
-                                                </FormItem>
-                                                <FormItem className="flex items-center space-x-2 space-y-0">
-                                                     <FormControl>
-                                                        <Button size="sm" type="button" variant={field.value === 'hourly' ? 'default' : 'outline'} onClick={() => field.onChange('hourly')} className="h-10">Hourly</Button>
-                                                    </FormControl>
-                                                </FormItem>
-                                            </RadioGroup>
-                                        )}
-                                    />
-                                </div>
-                            </FormControl>
+                            <div className="!mt-2 space-y-2">
+                              <FormControl>
+                                  <Input type="number" {...field} className="bg-background text-lg" />
+                              </FormControl>
+                              <FormField
+                                  control={form.control}
+                                  name="salaryType"
+                                  render={({ field: radioField }) => (
+                                      <RadioGroup
+                                          onValueChange={radioField.onChange}
+                                          defaultValue={radioField.value}
+                                          className="flex gap-2"
+                                      >
+                                          <FormItem className="flex-1">
+                                              <FormControl>
+                                                  <Button size="sm" type="button" variant={radioField.value === 'monthly' ? 'default' : 'outline'} onClick={() => radioField.onChange('monthly')} className="w-full h-10">Monthly</Button>
+                                              </FormControl>
+                                          </FormItem>
+                                          <FormItem className="flex-1">
+                                               <FormControl>
+                                                  <Button size="sm" type="button" variant={radioField.value === 'hourly' ? 'default' : 'outline'} onClick={() => radioField.onChange('hourly')} className="w-full h-10">Hourly</Button>
+                                              </FormControl>
+                                          </FormItem>
+                                      </RadioGroup>
+                                  )}
+                              />
+                            </div>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
               </div>
 
-              <Button type="button" variant="outline" onClick={handleReset}>
+              <Button type="button" variant="outline" size="lg" onClick={handleReset} className="w-full md:w-auto">
                   <RefreshCcw />
-                  Reset
+                  Reset Calculator
               </Button>
           </form>
         </Form>
         </Card>
       
-        <Card className="bg-muted/30 border-dashed sticky top-16">
+        <Card className="bg-muted/30 border-dashed sticky top-8">
             <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-xl font-semibold">
-                    <Calculator className="size-5" />
+                <CardTitle className="flex items-center gap-3 text-xl font-semibold">
+                    <Calculator className="size-6 text-primary" />
                     Cost & Savings Summary
                 </CardTitle>
             </CardHeader>
@@ -199,15 +198,15 @@ export default function RoiCalculator() {
                 <div>
                     <h3 className="font-semibold flex items-center gap-2 text-muted-foreground"><TrendingDown className="text-destructive" /> Current Interviewing Cost</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3 text-center">
-                        <div className="bg-background/50 rounded-lg p-3">
+                        <div className="bg-background/50 rounded-lg p-4">
                             <p className="text-sm font-medium text-muted-foreground">Per Interview</p>
                             <p className="text-2xl font-bold">{formatCurrency(costs.costPerInterview)}</p>
                         </div>
-                        <div className="bg-background/50 rounded-lg p-3">
+                        <div className="bg-background/50 rounded-lg p-4">
                             <p className="text-sm font-medium text-muted-foreground">Per Role</p>
                             <p className="text-2xl font-bold">{formatCurrency(costs.costPerRole)}</p>
                         </div>
-                        <div className="bg-background/50 rounded-lg p-3">
+                        <div className="bg-background/50 rounded-lg p-4">
                             <p className="text-sm font-medium text-muted-foreground">Quarterly Total</p>
                             <p className="text-2xl font-bold">{formatCurrency(costs.quarterlyTotal)}</p>
                         </div>
