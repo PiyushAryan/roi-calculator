@@ -218,9 +218,9 @@ export default function RoiCalculator() {
                 
                 <Separator />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                      <div className="flex items-start gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                  <div className="space-y-6">
+                      <div className="flex items-center gap-4">
                           <div className="p-2 bg-muted rounded-md">
                               <TrendingDown className="w-5 h-5 text-destructive" />
                           </div>
@@ -229,7 +229,7 @@ export default function RoiCalculator() {
                               <p className="text-2xl font-bold">{formatCurrency(costs.currentQuarterlyCost)}</p>
                           </div>
                       </div>
-                      <div className="flex items-start gap-4">
+                      <div className="flex items-center gap-4">
                           <div className="p-2 bg-muted rounded-md">
                               <TrendingUp className="w-5 h-5 text-green-500" />
                           </div>
@@ -239,8 +239,8 @@ export default function RoiCalculator() {
                           </div>
                       </div>
                   </div>
-                  <div className="bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
-                    <div className="p-2 bg-primary/20 rounded-full mb-2">
+                  <div className="bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center h-full">
+                    <div className="p-3 bg-primary/20 rounded-full mb-3">
                       <BadgePercent className="w-6 h-6 text-primary"/>
                     </div>
                     <h3 className="text-lg font-semibold text-primary">Total Quarterly Savings</h3>
