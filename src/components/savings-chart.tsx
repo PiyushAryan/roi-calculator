@@ -40,44 +40,46 @@ export default function SavingsChart({ data }: SavingsChartProps) {
   }
 
   return (
-    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <BarChart
-        accessibilityLayer
-        data={data}
-        margin={{
-          top: 20,
-          right: 20,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <XAxis
-          dataKey="name"
-          stroke="#888888"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-        />
-        <YAxis
-          stroke="#888888"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-          tickFormatter={(value) => `₹${Number(value) / 1000}k`}
-        />
-        <Tooltip
-            cursor={false}
-            content={<ChartTooltipContent 
-                formatter={(value) => formatCurrency(value as number)}
-                indicator="dot" 
-            />}
-        />
-        <Bar dataKey="value" radius={4}>
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={entry.fill} />
-          ))}
-        </Bar>
-      </BarChart>
-    </ChartContainer>
+    <ResponsiveContainer width="100%" height="100%">
+      <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+        <BarChart
+          accessibilityLayer
+          data={data}
+          margin={{
+            top: 20,
+            right: 20,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <XAxis
+            dataKey="name"
+            stroke="#888888"
+            fontSize={12}
+            tickLine={false}
+            axisLine={false}
+          />
+          <YAxis
+            stroke="#888888"
+            fontSize={12}
+            tickLine={false}
+            axisLine={false}
+            tickFormatter={(value) => `₹${Number(value) / 1000}k`}
+          />
+          <Tooltip
+              cursor={false}
+              content={<ChartTooltipContent 
+                  formatter={(value) => formatCurrency(value as number)}
+                  indicator="dot" 
+              />}
+          />
+          <Bar dataKey="value" radius={4}>
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.fill} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ChartContainer>
+    </ResponsiveContainer>
   )
 }
