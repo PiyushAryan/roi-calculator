@@ -1,6 +1,6 @@
 "use client"
 
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Cell } from "recharts"
 
 import {
   ChartContainer,
@@ -72,7 +72,11 @@ export default function SavingsChart({ data }: SavingsChartProps) {
                 indicator="dot" 
             />}
         />
-        <Bar dataKey="value" radius={4} />
+        <Bar dataKey="value" radius={4}>
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.fill} />
+          ))}
+        </Bar>
       </BarChart>
     </ChartContainer>
   )
