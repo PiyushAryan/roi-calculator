@@ -9,31 +9,19 @@ import {
   CircleDollarSign,
   Clock,
   RefreshCcw,
-  TrendingDown,
   Users,
-  CheckSquare,
   BadgePercent,
-  Calculator,
+  TrendingUp,
+  TrendingDown,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
+import SavingsChart from "./savings-chart";
 
 const formSchema = z.object({
   interviewsPerRole: z.coerce.number().min(1, "Must be at least 1"),
@@ -74,7 +62,7 @@ export default function RoiCalculator() {
     } = watchedValues;
 
     if (!form.formState.isValid) {
-      return { costPerInterview: 0, costPerRole: 0, quarterlyTotal: 0, savingsPerQuarter: 0 };
+      return { currentQuarterlyCost: 0, newQuarterlyCost: 0, quarterlySavings: 0 };
     }
 
     const hourlySalary =
@@ -85,14 +73,15 @@ export default function RoiCalculator() {
     const costPerInterview = hourlySalary * avgInterviewDuration;
     const costPerRole = interviewsPerRole * costPerInterview;
     const monthlyInterviewCost = costPerRole * monthlyHiringVolume;
-    const quarterlyTotal = monthlyInterviewCost * 3;
-    const savingsPerQuarter = quarterlyTotal * INTERVUE_SAVINGS_PERCENTAGE;
+    const currentQuarterlyCost = monthlyInterviewCost * 3;
+    
+    const quarterlySavings = currentQuarterlyCost * INTERVUE_SAVINGS_PERCENTAGE;
+    const newQuarterlyCost = currentQuarterlyCost - quarterlySavings;
 
     return {
-      costPerInterview,
-      costPerRole,
-      quarterlyTotal,
-      savingsPerQuarter,
+      currentQuarterlyCost,
+      newQuarterlyCost,
+      quarterlySavings,
     };
   }, [watchedValues, form.formState.isValid]);
 
@@ -109,125 +98,147 @@ export default function RoiCalculator() {
     form.reset(initialValues);
   }
 
-  const InputField = ({ name, label, icon: Icon, unit }: { name: keyof FormValues, label: string, icon: React.ElementType, unit?: string }) => (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="flex items-center gap-2 font-medium text-muted-foreground">
-            <Icon className="size-5" />
-            <span>{label}</span>
-          </FormLabel>
-          <FormControl>
-            <Input type="number" {...field} className="bg-background !mt-2 text-lg" unit={unit} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-  
+  const chartData = [
+    { name: "Current Cost", value: costs.currentQuarterlyCost, fill: "var(--color-chart-1)" },
+    { name: "With Intervue.io", value: costs.newQuarterlyCost, fill: "var(--color-chart-2)" },
+  ];
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-        <Card className="border-none shadow-none bg-transparent p-0">
-        <Form {...form}>
-          <form className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <InputField name="interviewsPerRole" label="Interviews per Role" icon={Briefcase}/>
-                <InputField name="monthlyHiringVolume" label="Monthly Hiring Volume" icon={Users} unit="roles" />
-                <InputField name="avgInterviewDuration" label="Avg. Interview Duration" icon={Clock} unit="hours" />
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start">
+      <div className="lg:col-span-2">
+        <Card className="bg-muted/30 border-dashed">
+          <CardHeader>
+            <CardTitle>Your Current Process</CardTitle>
+            <CardDescription>Enter your current interviewing metrics.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="interviewsPerRole"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Interviews / Role</FormLabel>
+                        <FormControl>
+                          <Input type="number" {...field} icon={Briefcase}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="monthlyHiringVolume"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Monthly Hires</FormLabel>
+                        <FormControl>
+                          <Input type="number" {...field} icon={Users} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                    control={form.control}
+                    name="avgInterviewDuration"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Avg. Interview Duration (hrs)</FormLabel>
+                            <FormControl>
+                                <Input type="number" {...field} icon={Clock} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
                 <FormField
                     control={form.control}
                     name="avgInterviewerSalary"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="flex items-center gap-2 font-medium text-muted-foreground">
-                                <CircleDollarSign className="size-5" />
-                                <span>Average Interviewer Salary</span>
-                            </FormLabel>
-                            <div className="!mt-2 space-y-2">
-                              <FormControl>
-                                  <Input type="number" {...field} className="bg-background text-lg" />
-                              </FormControl>
-                              <FormField
-                                  control={form.control}
-                                  name="salaryType"
-                                  render={({ field: radioField }) => (
-                                      <RadioGroup
-                                          onValueChange={radioField.onChange}
-                                          defaultValue={radioField.value}
-                                          className="flex gap-2"
-                                      >
-                                          <FormItem className="flex-1">
+                            <FormLabel>Avg. Interviewer Salary</FormLabel>
+                            <FormControl>
+                                <Input type="number" {...field} icon={CircleDollarSign} />
+                            </FormControl>
+                            <FormField
+                                control={form.control}
+                                name="salaryType"
+                                render={({ field: radioField }) => (
+                                    <RadioGroup
+                                        onValueChange={radioField.onChange}
+                                        defaultValue={radioField.value}
+                                        className="grid grid-cols-2 gap-2 mt-2"
+                                    >
+                                        <FormItem>
+                                            <FormControl>
+                                                <Button size="sm" type="button" variant={radioField.value === 'monthly' ? 'default' : 'outline'} onClick={() => radioField.onChange('monthly')} className="w-full">Monthly</Button>
+                                            </FormControl>
+                                        </FormItem>
+                                        <FormItem>
                                               <FormControl>
-                                                  <Button size="sm" type="button" variant={radioField.value === 'monthly' ? 'default' : 'outline'} onClick={() => radioField.onChange('monthly')} className="w-full h-10">Monthly</Button>
-                                              </FormControl>
-                                          </FormItem>
-                                          <FormItem className="flex-1">
-                                               <FormControl>
-                                                  <Button size="sm" type="button" variant={radioField.value === 'hourly' ? 'default' : 'outline'} onClick={() => radioField.onChange('hourly')} className="w-full h-10">Hourly</Button>
-                                              </FormControl>
-                                          </FormItem>
-                                      </RadioGroup>
-                                  )}
-                              />
-                            </div>
+                                                <Button size="sm" type="button" variant={radioField.value === 'hourly' ? 'default' : 'outline'} onClick={() => radioField.onChange('hourly')} className="w-full">Hourly</Button>
+                                            </FormControl>
+                                        </FormItem>
+                                    </RadioGroup>
+                                )}
+                            />
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-              </div>
 
-              <Button type="button" variant="outline" size="lg" onClick={handleReset} className="w-full md:w-auto">
-                  <RefreshCcw />
-                  Reset Calculator
-              </Button>
-          </form>
-        </Form>
+                <Button type="button" variant="ghost" size="sm" onClick={handleReset} className="w-full md:w-auto text-muted-foreground">
+                    <RefreshCcw className="mr-2" />
+                    Reset Calculator
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
         </Card>
+      </div>
       
-        <Card className="bg-muted/30 border-dashed sticky top-8">
+      <div className="lg:col-span-3">
+        <Card className="shadow-lg">
             <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-xl font-semibold">
-                    <Calculator className="size-6 text-primary" />
-                    Cost & Savings Summary
-                </CardTitle>
+                <CardTitle className="text-2xl">Your Potential Savings</CardTitle>
+                <CardDescription>
+                  <BadgePercent className="inline-block mr-2 text-green-500" />
+                  Assuming a 40% cost reduction with Intervue.io
+                </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-                <div>
-                    <h3 className="font-semibold flex items-center gap-2 text-muted-foreground"><TrendingDown className="text-destructive" /> Current Interviewing Cost</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3 text-center">
-                        <div className="bg-background/50 rounded-lg p-4">
-                            <p className="text-sm font-medium text-muted-foreground">Per Interview</p>
-                            <p className="text-2xl font-bold">{formatCurrency(costs.costPerInterview)}</p>
-                        </div>
-                        <div className="bg-background/50 rounded-lg p-4">
-                            <p className="text-sm font-medium text-muted-foreground">Per Role</p>
-                            <p className="text-2xl font-bold">{formatCurrency(costs.costPerRole)}</p>
-                        </div>
-                        <div className="bg-background/50 rounded-lg p-4">
-                            <p className="text-sm font-medium text-muted-foreground">Quarterly Total</p>
-                            <p className="text-2xl font-bold">{formatCurrency(costs.quarterlyTotal)}</p>
-                        </div>
-                    </div>
+                <div className="h-64 w-full">
+                  <SavingsChart data={chartData} />
                 </div>
-
-                <Separator />
                 
-                <div>
-                    <h3 className="font-semibold flex items-center gap-2 text-muted-foreground"><CheckSquare className="text-green-500"/> With Intervue.io</h3>
-                    <div className="mt-3 bg-background/50 rounded-lg p-4">
-                        <p className="flex items-center gap-2 text-muted-foreground"><BadgePercent className="text-primary"/>40% Reduction via Automated + Expert Interviews</p>
-                        <p className="mt-2">
-                            <span className="font-semibold text-lg">You Could Save: </span>
-                            <span className="text-3xl font-bold text-primary">{formatCurrency(costs.savingsPerQuarter)}</span>
-                            <span className="text-muted-foreground"> per quarter</span>
-                        </p>
-                    </div>
+                <Separator />
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                  <div className="bg-muted/40 p-4 rounded-lg">
+                    <h3 className="text-sm font-medium text-muted-foreground flex items-center justify-center gap-2"><TrendingDown className="text-destructive"/>Current Cost</h3>
+                    <p className="text-2xl font-bold mt-1">{formatCurrency(costs.currentQuarterlyCost)}</p>
+                    <p className="text-xs text-muted-foreground">per quarter</p>
+                  </div>
+                  <div className="bg-muted/40 p-4 rounded-lg">
+                    <h3 className="text-sm font-medium text-muted-foreground flex items-center justify-center gap-2"><TrendingUp className="text-green-500" />Intervue.io Cost</h3>
+                    <p className="text-2xl font-bold mt-1">{formatCurrency(costs.newQuarterlyCost)}</p>
+                    <p className="text-xs text-muted-foreground">per quarter</p>
+                  </div>
+                   <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+                    <h3 className="text-sm font-medium text-primary flex items-center justify-center gap-2"><BadgePercent/>Quarterly Savings</h3>
+                    <p className="text-2xl font-bold mt-1 text-primary">{formatCurrency(costs.quarterlySavings)}</p>
+                    <p className="text-xs text-primary/80">That's 40%!</p>
+                  </div>
                 </div>
             </CardContent>
         </Card>
+      </div>
     </div>
   );
 }
