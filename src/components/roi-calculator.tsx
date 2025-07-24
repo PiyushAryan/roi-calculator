@@ -5,16 +5,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
-  ArrowDown,
   Briefcase,
   Calendar,
-  ChevronRight,
   CircleDollarSign,
   Clock,
   Lightbulb,
   Loader2,
   PiggyBank,
   RefreshCcw,
+  TrendingDown,
+  TrendingUp,
   Users,
 } from "lucide-react";
 
@@ -172,13 +172,16 @@ export default function RoiCalculator() {
     form.reset(initialValues);
   }
 
-  const InputField = ({ name, label }: { name: keyof FormValues, label: string }) => (
+  const InputField = ({ name, label, icon: Icon }: { name: keyof FormValues, label: string, icon: React.ElementType }) => (
     <FormField
       control={form.control}
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className="flex items-center gap-2">
+            <Icon className="size-4 text-muted-foreground" />
+            {label}
+          </FormLabel>
           <FormControl>
             <Input type="number" {...field} className="bg-background" />
           </FormControl>
@@ -198,12 +201,12 @@ export default function RoiCalculator() {
               <h2 className="text-xl font-semibold mb-1">Current Recruitment Metrics</h2>
               <p className="text-muted-foreground mb-6">Enter your company's current hiring data.</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                <InputField name="annualHires" label="Total Annual Hires" />
-                <InputField name="interviewsPerHire" label="Interviews per Hire" />
-                <InputField name="timeToHire" label="Avg. Time to Hire (days)" />
-                <InputField name="costPerHire" label="Avg. Cost per Hire ($)" />
-                <InputField name="employeeTurnoverRate" label="Annual Turnover Rate (%)" />
-                <InputField name="avgSalary" label="Avg. Annual Salary ($)" />
+                <InputField name="annualHires" label="Total Annual Hires" icon={Users} />
+                <InputField name="interviewsPerHire" label="Interviews per Hire" icon={Briefcase}/>
+                <InputField name="timeToHire" label="Avg. Time to Hire (days)" icon={Clock} />
+                <InputField name="costPerHire" label="Avg. Cost per Hire ($)" icon={CircleDollarSign} />
+                <InputField name="employeeTurnoverRate" label="Annual Turnover Rate (%)" icon={TrendingDown} />
+                <InputField name="avgSalary" label="Avg. Annual Salary ($)" icon={CircleDollarSign} />
               </div>
             </div>
 
@@ -211,9 +214,9 @@ export default function RoiCalculator() {
                 <h2 className="text-xl font-semibold mb-1">Intervue.io Impact Parameters</h2>
                 <p className="text-muted-foreground mb-6">Estimate the improvements with Intervue.io or let AI suggest them.</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                  <InputField name="timeToHireReduction" label="Time to Hire Reduction (days)" />
-                  <InputField name="costPerHireReduction" label="Cost per Hire Reduction ($)" />
-                  <InputField name="employeeTurnoverReduction" label="Turnover Reduction (%)" />
+                  <InputField name="timeToHireReduction" label="Time to Hire Reduction (days)" icon={TrendingUp} />
+                  <InputField name="costPerHireReduction" label="Cost per Hire Reduction ($)" icon={TrendingUp} />
+                  <InputField name="employeeTurnoverReduction" label="Turnover Reduction (%)" icon={TrendingUp} />
               </div>
               <div className="flex flex-col sm:flex-row gap-2 mt-6">
                   <Button type="button" onClick={handleSuggest} disabled={isSuggesting} className="w-full sm:w-auto">
@@ -245,15 +248,15 @@ export default function RoiCalculator() {
             </div>
              <div className="grid grid-cols-3 gap-2 text-center mt-4">
                 <div className="rounded-lg p-3">
-                    <p className="text-sm font-medium text-muted-foreground">Time</p>
+                    <p className="text-sm font-medium text-muted-foreground flex items-center justify-center gap-2"><Clock className="size-4" />Time</p>
                     <p className="text-xl font-bold">{formatCurrency(savings.time)}</p>
                 </div>
                 <div className="rounded-lg p-3">
-                    <p className="text-sm font-medium text-muted-foreground">Hiring Cost</p>
+                    <p className="text-sm font-medium text-muted-foreground flex items-center justify-center gap-2"><CircleDollarSign className="size-4" />Hiring Cost</p>
                     <p className="text-xl font-bold">{formatCurrency(savings.cost)}</p>
                 </div>
                 <div className="rounded-lg p-3">
-                    <p className="text-sm font-medium text-muted-foreground">Turnover</p>
+                    <p className="text-sm font-medium text-muted-foreground flex items-center justify-center gap-2"><TrendingDown className="size-4" />Turnover</p>
                     <p className="text-xl font-bold">{formatCurrency(savings.turnover)}</p>
                 </div>
             </div>
