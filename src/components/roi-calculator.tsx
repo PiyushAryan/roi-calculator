@@ -13,6 +13,7 @@ import {
   BadgePercent,
   TrendingUp,
   TrendingDown,
+  ArrowRight,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -247,6 +248,14 @@ export default function RoiCalculator() {
                     <p className="text-4xl font-bold mt-1 text-primary">{formatCurrency(costs.quarterlySavings)}</p>
                     <p className="text-sm text-primary/80 mt-1">That's a 40% reduction!</p>
                   </div>
+                </div>
+                <div className="mt-6 text-center pt-4">
+                    <Button asChild size="lg" className="w-full md:w-auto">
+                        <a href="https://www.intervue.io/business-book-a-demo#form" target="_blank" rel="noopener noreferrer">
+                            Hire with Intervue.io
+                            <ArrowRight className="ml-2 h-5 w-5" />
+                        </a>
+                    </Button>
                 </div>
             </CardContent>
         </Card>
