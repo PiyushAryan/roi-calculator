@@ -37,6 +37,7 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import SavingsChart from "./savings-chart";
+import { Slider } from "@/components/ui/slider";
 
 const formSchema = z.object({
   interviewsPerRole: z.coerce.number().min(1, "Must be at least 1"),
@@ -132,34 +133,56 @@ export default function RoiCalculator() {
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="interviewsPerRole"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Interviews / Role</FormLabel>
+                <FormField
+                  control={form.control}
+                  name="interviewsPerRole"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Interviews / Role</FormLabel>
+                      <div className="flex items-center gap-4">
                         <FormControl>
-                          <Input type="number" {...field} icon={Briefcase} />
+                          <Slider
+                            min={1}
+                            max={20}
+                            step={1}
+                            value={[field.value]}
+                            onValueChange={(value) => field.onChange(value[0])}
+                            className="w-full"
+                          />
                         </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="monthlyHiringVolume"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Monthly Hires</FormLabel>
+                        <div className="w-20 text-center border rounded-md py-2 text-sm">
+                          {field.value}
+                        </div>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="monthlyHiringVolume"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Monthly Hires</FormLabel>
+                       <div className="flex items-center gap-4">
                         <FormControl>
-                          <Input type="number" {...field} icon={Users} />
+                           <Slider
+                            min={1}
+                            max={100}
+                            step={1}
+                            value={[field.value]}
+                            onValueChange={(value) => field.onChange(value[0])}
+                            className="w-full"
+                          />
                         </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                         <div className="w-20 text-center border rounded-md py-2 text-sm">
+                          {field.value}
+                        </div>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={form.control}
@@ -167,9 +190,21 @@ export default function RoiCalculator() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Avg. Interview Duration (hrs)</FormLabel>
-                      <FormControl>
-                        <Input type="number" {...field} icon={Clock} />
-                      </FormControl>
+                       <div className="flex items-center gap-4">
+                        <FormControl>
+                           <Slider
+                            min={0.5}
+                            max={5}
+                            step={0.5}
+                            value={[field.value]}
+                            onValueChange={(value) => field.onChange(value[0])}
+                            className="w-full"
+                          />
+                        </FormControl>
+                         <div className="w-20 text-center border rounded-md py-2 text-sm">
+                          {field.value.toFixed(1)}
+                        </div>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
