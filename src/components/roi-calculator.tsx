@@ -98,8 +98,8 @@ export default function RoiCalculator() {
   ];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-12 items-start">
-      <div className="lg:col-span-2">
+    <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-12 items-start">
+      <div className="md:col-span-2">
         <Card className="bg-muted/30 border-dashed">
           <CardHeader>
             <CardTitle>Your Current Process</CardTitle>
@@ -197,7 +197,7 @@ export default function RoiCalculator() {
         </Card>
       </div>
       
-      <div className={`lg:col-span-3 transition-opacity duration-500 ${showResults ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`md:col-span-3 transition-opacity duration-500 ${showResults ? 'opacity-100' : 'opacity-0'}`}>
         <Card className="shadow-lg">
             <CardHeader>
                 <CardTitle className="text-2xl">Your Potential Savings</CardTitle>
@@ -207,7 +207,7 @@ export default function RoiCalculator() {
             </CardHeader>
             <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                       <div className="flex items-start gap-4">
                           <div className="p-2 bg-muted rounded-md mt-1">
                               <TrendingDown className="w-5 h-5 text-destructive" />
@@ -231,8 +231,8 @@ export default function RoiCalculator() {
                     style={
                       {
                         '--angle': '0deg',
-                        'border-image':
-                          'conic-gradient(from var(--angle), black, transparent, black, transparent, black) 1',
+                        border: '0.2rem solid transparent',
+                        'borderImage': 'conic-gradient(from var(--angle), black, transparent, black, transparent, black) 1 stretch',
                       } as React.CSSProperties
                     }
                     className="p-1 rounded-lg animate-rotate"
