@@ -206,7 +206,7 @@ export default function RoiCalculator() {
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                   <div className="space-y-6">
                       <div className="flex items-start gap-4">
                           <div className="p-2 bg-muted rounded-md mt-1">
@@ -235,9 +235,9 @@ export default function RoiCalculator() {
                         'borderImage': 'conic-gradient(from var(--angle), #000 0deg 90deg, transparent 90deg 180deg, #000 180deg 270deg, transparent 270deg 360deg) 1 stretch',
                       } as React.CSSProperties
                     }
-                    className="p-1 rounded-lg animate-rotate"
+                    className="p-1 rounded-xl animate-rotate"
                   >
-                    <div className="bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center h-full">
+                    <div className="bg-primary/10 p-6 rounded-xl flex flex-col justify-center items-center text-center h-full">
                         <div className="p-3 bg-primary/20 rounded-full mb-3">
                             <BadgePercent className="w-6 h-6 text-primary"/>
                         </div>
