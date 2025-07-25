@@ -314,9 +314,9 @@ export default function RoiCalculator() {
                       Current Quarterly Cost
                     </p>
                     <p className="text-2xl font-bold">
-                      {new Intl.NumberFormat("en-IN", {
+                      {new Intl.NumberFormat("en-US", {
                         style: "currency",
-                        currency: "INR",
+                        currency: "USD",
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 0,
                       }).format(costs.currentQuarterlyCost)}
@@ -332,9 +332,9 @@ export default function RoiCalculator() {
                       Intervue.io Quarterly Cost
                     </p>
                     <p className="text-2xl font-bold">
-                      {new Intl.NumberFormat("en-IN", {
+                      {new Intl.NumberFormat("en-US", {
                         style: "currency",
-                        currency: "INR",
+                        currency: "USD",
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 0,
                       }).format(costs.newQuarterlyCost)}
@@ -351,9 +351,9 @@ export default function RoiCalculator() {
                   Total Quarterly Savings
                 </h3>
                 <p className="text-4xl font-bold mt-1">
-                  {new Intl.NumberFormat("en-IN", {
+                  {new Intl.NumberFormat("en-US", {
                     style: "currency",
-                    currency: "INR",
+                    currency: "USD",
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0,
                   }).format(costs.quarterlySavings)}

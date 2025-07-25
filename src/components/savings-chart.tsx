@@ -17,9 +17,9 @@ interface SavingsChartProps {
 
 export default function SavingsChart({ data }: SavingsChartProps) {
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: "INR",
+      currency: "USD",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
@@ -64,7 +64,7 @@ export default function SavingsChart({ data }: SavingsChartProps) {
             fontSize={12}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(value) => `₹${Number(value) / 1000}k`}
+            tickFormatter={(value) => `$${Number(value) / 1000}k`}
           />
           <Tooltip
               cursor={false}
