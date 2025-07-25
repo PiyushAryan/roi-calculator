@@ -23,8 +23,8 @@
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
+    --chart-1: 0 84.2% 60.2%;
+    --chart-2: 142.1 76.2% 36.3%;
     --chart-3: 340 80% 55%;
     --chart-4: 40 90% 60%;
     --chart-5: 280 75% 55%;
@@ -57,6 +57,12 @@
 }
 
 @layer base {
+  @property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+
   * {
     @apply border-border;
   }

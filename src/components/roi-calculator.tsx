@@ -54,15 +54,6 @@ export default function RoiCalculator() {
 
   const watchedValues = form.watch();
 
-  useEffect(() => {
-    const subscription = form.watch((value, { name, type }) => {
-      if (type === 'change') {
-        setShowResults(true);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form]);
-
   const costs = useMemo(() => {
     const {
       interviewsPerRole,
@@ -95,15 +86,6 @@ export default function RoiCalculator() {
       quarterlySavings,
     };
   }, [watchedValues, form.formState.isValid]);
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
   
   const handleReset = () => {
     form.reset(initialValues);
@@ -111,13 +93,13 @@ export default function RoiCalculator() {
   }
 
   const chartData = [
-    { name: "Current Cost", value: costs.currentQuarterlyCost, fill: "hsl(var(--destructive))" },
-    { name: "With Intervue.io", value: costs.newQuarterlyCost, fill: "hsl(142.1 76.2% 36.3%)" },
+    { name: "Current Cost", value: costs.currentQuarterlyCost, fill: "hsl(var(--chart-1))" },
+    { name: "With Intervue.io", value: costs.newQuarterlyCost, fill: "hsl(var(--chart-2))" },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-12 items-start">
-      <div className="md:col-span-2">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-12 items-start">
+      <div className="lg:col-span-2">
         <Card className="bg-muted/30 border-dashed">
           <CardHeader>
             <CardTitle>Your Current Process</CardTitle>
@@ -134,7 +116,7 @@ export default function RoiCalculator() {
                       <FormItem>
                         <FormLabel>Interviews / Role</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} icon={Briefcase}/>
+                          <Input type="number" {...field} icon={Briefcase} onChange={(e) => {field.onChange(e); setShowResults(true)}}/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -147,7 +129,7 @@ export default function RoiCalculator() {
                       <FormItem>
                         <FormLabel>Monthly Hires</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} icon={Users} />
+                          <Input type="number" {...field} icon={Users} onChange={(e) => {field.onChange(e); setShowResults(true)}} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -162,7 +144,7 @@ export default function RoiCalculator() {
                         <FormItem>
                             <FormLabel>Avg. Interview Duration (hrs)</FormLabel>
                             <FormControl>
-                                <Input type="number" {...field} icon={Clock} />
+                                <Input type="number" {...field} icon={Clock} onChange={(e) => {field.onChange(e); setShowResults(true)}} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -176,14 +158,14 @@ export default function RoiCalculator() {
                         <FormItem>
                             <FormLabel>Avg. Interviewer Salary</FormLabel>
                             <FormControl>
-                                <Input type="number" {...field} icon={CircleDollarSign} />
+                                <Input type="number" {...field} icon={CircleDollarSign} onChange={(e) => {field.onChange(e); setShowResults(true)}} />
                             </FormControl>
                             <FormField
                                 control={form.control}
                                 name="salaryType"
                                 render={({ field: radioField }) => (
                                     <RadioGroup
-                                        onValueChange={radioField.onChange}
+                                        onValueChange={(value) => {radioField.onChange(value); setShowResults(true)}}
                                         defaultValue={radioField.value}
                                         className="grid grid-cols-2 gap-2 mt-2"
                                     >
@@ -215,7 +197,7 @@ export default function RoiCalculator() {
         </Card>
       </div>
       
-      <div className={`md:col-span-3 transition-opacity duration-500 ${showResults ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`lg:col-span-3 transition-opacity duration-500 ${showResults ? 'opacity-100' : 'opacity-0'}`}>
         <Card className="shadow-lg">
             <CardHeader>
                 <CardTitle className="text-2xl">Your Potential Savings</CardTitle>
@@ -225,33 +207,44 @@ export default function RoiCalculator() {
             </CardHeader>
             <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                  <div className="space-y-6">
-                      <div className="flex items-center gap-4">
-                          <div className="p-2 bg-muted rounded-md">
+                  <div className="space-y-4">
+                      <div className="flex items-start gap-4">
+                          <div className="p-2 bg-muted rounded-md mt-1">
                               <TrendingDown className="w-5 h-5 text-destructive" />
                           </div>
                           <div>
                               <p className="text-sm text-muted-foreground">Current Quarterly Cost</p>
-                              <p className="text-2xl font-bold">{formatCurrency(costs.currentQuarterlyCost)}</p>
+                              <p className="text-2xl font-bold">{new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(costs.currentQuarterlyCost)}</p>
                           </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                          <div className="p-2 bg-muted rounded-md">
+                      <div className="flex items-start gap-4">
+                          <div className="p-2 bg-muted rounded-md mt-1">
                               <TrendingUp className="w-5 h-5 text-green-500" />
                           </div>
                           <div>
                               <p className="text-sm text-muted-foreground">Intervue.io Quarterly Cost</p>
-                              <p className="text-2xl font-bold">{formatCurrency(costs.newQuarterlyCost)}</p>
+                              <p className="text-2xl font-bold">{new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(costs.newQuarterlyCost)}</p>
                           </div>
                       </div>
                   </div>
-                  <div className="bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center h-full">
-                      <div className="p-3 bg-primary/20 rounded-full mb-3">
-                          <BadgePercent className="w-6 h-6 text-primary"/>
-                      </div>
-                      <h3 className="text-lg font-semibold text-primary">Total Quarterly Savings</h3>
-                      <p className="text-4xl font-bold mt-1 text-primary">{formatCurrency(costs.quarterlySavings)}</p>
-                      <p className="text-sm text-primary/80 mt-1">That's a 40% reduction!</p>
+                   <div
+                    style={
+                      {
+                        '--angle': '0deg',
+                        'border-image':
+                          'conic-gradient(from var(--angle), black, transparent, black, transparent, black) 1',
+                      } as React.CSSProperties
+                    }
+                    className="p-1 rounded-lg animate-rotate"
+                  >
+                    <div className="bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center h-full">
+                        <div className="p-3 bg-primary/20 rounded-full mb-3">
+                            <BadgePercent className="w-6 h-6 text-primary"/>
+                        </div>
+                        <h3 className="text-lg font-semibold text-primary">Total Quarterly Savings</h3>
+                        <p className="text-4xl font-bold mt-1 text-primary">{new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(costs.quarterlySavings)}</p>
+                        <p className="text-sm text-primary/80 mt-1">That's a 40% reduction!</p>
+                    </div>
                   </div>
                 </div>
 
