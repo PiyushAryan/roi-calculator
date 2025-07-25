@@ -227,17 +227,8 @@ export default function RoiCalculator() {
                           </div>
                       </div>
                   </div>
-                  <div
-                    style={
-                      {
-                        '--angle': '0deg',
-                        border: '0.2rem solid transparent',
-                        'borderImage': 'conic-gradient(from var(--angle), #000 0deg 90deg, transparent 90deg 180deg, #000 180deg 270deg, transparent 270deg 360deg) 1 stretch',
-                      } as React.CSSProperties
-                    }
-                    className="p-1 rounded-xl animate-rotate"
-                  >
-                    <div className="bg-primary/10 p-6 rounded-xl flex flex-col justify-center items-center text-center h-full">
+                  
+                    <div className="bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center h-full">
                         <div className="p-3 bg-primary/20 rounded-full mb-3">
                             <BadgePercent className="w-6 h-6 text-primary"/>
                         </div>
@@ -245,7 +236,7 @@ export default function RoiCalculator() {
                         <p className="text-4xl font-bold mt-1 text-primary">{new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(costs.quarterlySavings)}</p>
                         <p className="text-sm text-primary/80 mt-1">That's a 40% reduction!</p>
                     </div>
-                  </div>
+                  
                 </div>
 
                 <Separator />
