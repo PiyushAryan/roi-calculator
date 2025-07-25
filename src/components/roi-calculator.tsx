@@ -110,12 +110,12 @@ export default function RoiCalculator() {
     {
       name: "Current Cost",
       value: costs.currentQuarterlyCost,
-      fill: "hsl(var(--destructive))",
+      fill: "#ef4444",
     },
     {
       name: "With Intervue.io",
       value: costs.newQuarterlyCost,
-      fill: "hsl(var(--chart-2))",
+      fill: "#22c55e",
     },
   ];
 
@@ -272,7 +272,7 @@ export default function RoiCalculator() {
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="p-2 bg-muted rounded-md mt-1">
-                    <TrendingDown className="w-5 h-5 text-destructive" />
+                    <TrendingDown className="w-5 h-5 text-red-500" />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">
@@ -308,9 +308,9 @@ export default function RoiCalculator() {
                 </div>
               </div>
 
-              <div className="bg-accent/20 text-accent-foreground p-6 rounded-xl flex flex-col justify-center items-center text-center h-full">
-                <div className="p-3 bg-accent/30 rounded-full mb-3">
-                  <BadgePercent className="w-6 h-6 text-accent-foreground" />
+              <div className="bg-green-100 text-green-900 p-6 rounded-xl flex flex-col justify-center items-center text-center h-full">
+                <div className="p-3 bg-green-200 rounded-full mb-3">
+                  <BadgePercent className="w-6 h-6 text-green-900" />
                 </div>
                 <h3 className="text-lg font-semibold">
                   Total Quarterly Savings
