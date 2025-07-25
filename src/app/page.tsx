@@ -9,7 +9,7 @@ export default function Home() {
           <div className="text-center mb-12">
             <Image src="https://d2b1cooxpkirg1.cloudfront.net/publicAssets/intervue.svg" alt="Intervue.io Logo" width={72} height={72} className="mx-auto mb-4" />
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
-              Interview Cost Calculator
+              Hiring cost calculator
             </h1>
             <p className="mt-3 max-w-2xl mx-auto text-lg text-muted-foreground">
               Estimate your current interview costs and see how much you could save with Intervue.io.
