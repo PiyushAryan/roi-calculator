@@ -274,13 +274,13 @@ export default function RoiCalculator() {
                   )}
                 />
 
-                <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4 pt-4">
-                   <Button type="button" variant="ghost" size="sm" onClick={handleReset} className="w-full sm:w-auto text-muted-foreground">
-                    <RefreshCcw className="mr-2" />
+                <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-4 pt-4">
+                  <Button type="button" variant="ghost" size="sm" onClick={handleReset} className="w-full sm:w-auto text-muted-foreground">
+                    <RefreshCcw className="mr-2 h-4 w-4" />
                     Reset
                   </Button>
                   <Button type="submit" size="lg" className="w-full sm:w-auto">
-                    <Calculator className="mr-2" />
+                    <Calculator className="mr-2 h-4 w-4" />
                     Calculate Savings
                   </Button>
                 </div>
