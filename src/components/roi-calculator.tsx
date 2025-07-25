@@ -93,7 +93,7 @@ export default function RoiCalculator() {
   }
 
   const chartData = [
-    { name: "Current Cost", value: costs.currentQuarterlyCost, fill: "hsl(var(--chart-1))" },
+    { name: "Current Cost", value: costs.currentQuarterlyCost, fill: "hsl(var(--destructive))" },
     { name: "With Intervue.io", value: costs.newQuarterlyCost, fill: "hsl(var(--chart-2))" },
   ];
 
@@ -206,7 +206,7 @@ export default function RoiCalculator() {
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
                   <div className="space-y-6">
                       <div className="flex items-start gap-4">
                           <div className="p-2 bg-muted rounded-md mt-1">
@@ -227,12 +227,12 @@ export default function RoiCalculator() {
                           </div>
                       </div>
                   </div>
-                   <div
+                  <div
                     style={
                       {
                         '--angle': '0deg',
                         border: '0.2rem solid transparent',
-                        'borderImage': 'conic-gradient(from var(--angle), black, transparent, black, transparent, black) 1 stretch',
+                        'borderImage': 'conic-gradient(from var(--angle), #000 0deg 90deg, transparent 90deg 180deg, #000 180deg 270deg, transparent 270deg 360deg) 1 stretch',
                       } as React.CSSProperties
                     }
                     className="p-1 rounded-lg animate-rotate"
@@ -251,7 +251,7 @@ export default function RoiCalculator() {
                 <Separator />
                 
                 <div className="h-64 w-full">
-                  <SavingsChart data={chartData} />
+                    <SavingsChart data={chartData} />
                 </div>
                 
                 <div className="mt-6 text-center pt-4">
