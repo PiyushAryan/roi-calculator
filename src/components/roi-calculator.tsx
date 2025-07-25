@@ -224,7 +224,7 @@ export default function RoiCalculator() {
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-6">
                       <div className="flex items-center gap-4">
                           <div className="p-2 bg-muted rounded-md">
@@ -245,13 +245,16 @@ export default function RoiCalculator() {
                           </div>
                       </div>
                   </div>
-                  <div className="bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center h-full">
-                    <div className="p-3 bg-primary/20 rounded-full mb-3">
-                      <BadgePercent className="w-6 h-6 text-primary"/>
-                    </div>
-                    <h3 className="text-lg font-semibold text-primary">Total Quarterly Savings</h3>
-                    <p className="text-4xl font-bold mt-1 text-primary">{formatCurrency(costs.quarterlySavings)}</p>
-                    <p className="text-sm text-primary/80 mt-1">That's a 40% reduction!</p>
+                  <div className="relative rounded-lg p-px bg-gradient-to-r from-transparent via-black to-transparent">
+                     <div className="absolute inset-0 p-px rounded-lg animate-border-rotate" style={{backgroundImage: 'conic-gradient(from 0deg at 50% 50%, transparent 0%, black 25%, transparent 50%)'}}></div>
+                      <div className="bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center h-full relative">
+                          <div className="p-3 bg-primary/20 rounded-full mb-3">
+                              <BadgePercent className="w-6 h-6 text-primary"/>
+                          </div>
+                          <h3 className="text-lg font-semibold text-primary">Total Quarterly Savings</h3>
+                          <p className="text-4xl font-bold mt-1 text-primary">{formatCurrency(costs.quarterlySavings)}</p>
+                          <p className="text-sm text-primary/80 mt-1">That's a 40% reduction!</p>
+                      </div>
                   </div>
                 </div>
 
