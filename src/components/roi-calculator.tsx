@@ -245,15 +245,13 @@ export default function RoiCalculator() {
                           </div>
                       </div>
                   </div>
-                  <div className="relative rounded-lg p-px bg-[conic-gradient(from_0deg,hsl(var(--primary)),hsl(var(--primary)/.5),hsl(var(--primary)))] animate-border-rotate">
-                      <div className="bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center h-full">
-                          <div className="p-3 bg-primary/20 rounded-full mb-3">
-                              <BadgePercent className="w-6 h-6 text-primary"/>
-                          </div>
-                          <h3 className="text-lg font-semibold text-primary">Total Quarterly Savings</h3>
-                          <p className="text-4xl font-bold mt-1 text-primary">{formatCurrency(costs.quarterlySavings)}</p>
-                          <p className="text-sm text-primary/80 mt-1">That's a 40% reduction!</p>
+                  <div className="bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center h-full">
+                      <div className="p-3 bg-primary/20 rounded-full mb-3">
+                          <BadgePercent className="w-6 h-6 text-primary"/>
                       </div>
+                      <h3 className="text-lg font-semibold text-primary">Total Quarterly Savings</h3>
+                      <p className="text-4xl font-bold mt-1 text-primary">{formatCurrency(costs.quarterlySavings)}</p>
+                      <p className="text-sm text-primary/80 mt-1">That's a 40% reduction!</p>
                   </div>
                 </div>
 
