@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -46,12 +46,22 @@ const WORKING_HOURS_PER_MONTH = 160;
 const INTERVUE_SAVINGS_PERCENTAGE = 0.40;
 
 export default function RoiCalculator() {
+  const [showResults, setShowResults] = useState(false);
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialValues,
   });
 
   const watchedValues = form.watch();
+
+  useEffect(() => {
+    const subscription = form.watch((value, { name, type }) => {
+      if (type === 'change') {
+        setShowResults(true);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const costs = useMemo(() => {
     const {
@@ -97,11 +107,12 @@ export default function RoiCalculator() {
   
   const handleReset = () => {
     form.reset(initialValues);
+    setShowResults(false);
   }
 
   const chartData = [
-    { name: "Current Cost", value: costs.currentQuarterlyCost, fill: "hsl(var(--chart-1))" },
-    { name: "With Intervue.io", value: costs.newQuarterlyCost, fill: "hsl(var(--chart-2))" },
+    { name: "Current Cost", value: costs.currentQuarterlyCost, fill: "hsl(var(--destructive))" },
+    { name: "With Intervue.io", value: costs.newQuarterlyCost, fill: "hsl(142.1 76.2% 36.3%)" },
   ];
 
   return (
@@ -204,7 +215,7 @@ export default function RoiCalculator() {
         </Card>
       </div>
       
-      <div className="md:col-span-3">
+      <div className={`md:col-span-3 transition-opacity duration-500 ${showResults ? 'opacity-100' : 'opacity-0'}`}>
         <Card className="shadow-lg">
             <CardHeader>
                 <CardTitle className="text-2xl">Your Potential Savings</CardTitle>
@@ -213,12 +224,6 @@ export default function RoiCalculator() {
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-                <div className="h-64 w-full">
-                  <SavingsChart data={chartData} />
-                </div>
-                
-                <Separator />
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                   <div className="space-y-6">
                       <div className="flex items-center gap-4">
@@ -249,6 +254,13 @@ export default function RoiCalculator() {
                     <p className="text-sm text-primary/80 mt-1">That's a 40% reduction!</p>
                   </div>
                 </div>
+
+                <Separator />
+                
+                <div className="h-64 w-full">
+                  <SavingsChart data={chartData} />
+                </div>
+                
                 <div className="mt-6 text-center pt-4">
                     <Button asChild size="lg" className="w-full md:w-auto">
                         <a href="https://www.intervue.io/business-book-a-demo#form" target="_blank" rel="noopener noreferrer">
